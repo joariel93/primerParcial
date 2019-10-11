@@ -19,7 +19,7 @@ typedef struct
 	float PP;
 	int isEmpty;
 }pedido;
-
+#include "utn_structBibCliente.h"
 int utn_initSistemPedidos(pedido pArray[],int limite);
 int utn_findFreePedido(pedido pArray[],int limite,int* posicion);
 int utn_findPedidoById(pedido pArray[], int limite,int* posicion,int idEnviado);

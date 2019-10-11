@@ -64,7 +64,7 @@ int i;
 	printf("No se ha encontrado el número de legajo ingresado\n");
 return retorno;
 }
-int utn_addCliente(cliente pArray[],int limite,int contador,int nameLimit,int direcLimit)
+int utn_addCliente(cliente pArray[],int limite,int* contador,int nameLimit,int direcLimit)
 {
 char names[nameLimit];
 int posicion;
@@ -119,6 +119,7 @@ int errorDatos=1;
 	 					{
 	 					pArray[posicion].isEmpty=1;
 	 					pArray[posicion].id=contador;
+	 					contador++;
 	 					retorno=0;
 	 					return retorno;
 	 					}

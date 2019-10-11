@@ -21,7 +21,7 @@ typedef struct
 int utn_initSistemCliente(cliente pArray[],int limite);
 int utn_findFreeCliente(cliente pArray[],int limite,int* posicion);
 int utn_findClienteById(cliente pArray[], int limite,int* posicion,int legajo);
-int utn_addCliente(cliente pArray[],int limite,int contador, int nameLimit,int direcLimit);
+int utn_addCliente(cliente pArray[],int limite,int* contador, int nameLimit,int direcLimit);
 int utn_modifyCliente(cliente pArray[],int limite, int stringLimit);
 int utn_removeCliente(cliente pArray[],int limite);
 int utn_comprobe(int pArray[],int limite,int *errorDatos);
