@@ -116,6 +116,7 @@ int errorDatos=1;
 	 					retorno=0;
 	 					return retorno;
 	 					}
+		 		 	 	break;
 		 	 }
  		 }
 	 }
@@ -176,13 +177,14 @@ int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 												{
 												pArray[posicion].estado=1;
 												arrayCliente[pArray[posicion].idCliente].pedidos--;
-												return 0;
 												}
 												end=1;
 												break;
 										case 2:	break;
 										}
 									}
+									seleccion=0;
+									definitiveModification=0;
 									break;
 							case 2:	utn_getFloat(&newLDPE, "Ingrese la cantidad de Polietileno de baja densidad: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
 									while (definitiveModification == 0)
@@ -199,7 +201,6 @@ int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 												{
 												pArray[posicion].estado=1;
 												arrayCliente[pArray[posicion].idCliente].pedidos--;
-												return 0;
 												}
 												end=1;
 												break;
@@ -222,7 +223,6 @@ int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 													{
 														pArray[posicion].estado=1;
 														arrayCliente[pArray[posicion].idCliente].pedidos--;
-														return 0;
 													}
 													end=1;
 													break;
@@ -304,6 +304,9 @@ int utn_agregaID(cliente show[],int limiteCliente,int* idCliente)
 {
 	int id;
 	int idEnviado=idCliente;
+	printf("Ingrese el numero de ID\n");
+	__fpurge(stdin);
+	scanf("%d",&idEnviado);
 	utn_findClienteById(show,limiteCliente,&id,idEnviado);
 	*idCliente=id;
 	return 0;

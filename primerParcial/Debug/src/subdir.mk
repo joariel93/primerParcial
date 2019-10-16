@@ -4,19 +4,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/primelParcialv1.c \
+../src/primerParcial.c \
 ../src/utn_inputs.c \
 ../src/utn_structBibCliente.c \
 ../src/utn_structBibPedido.c 
 
 OBJS += \
-./src/primelParcialv1.o \
+./src/primerParcial.o \
 ./src/utn_inputs.o \
 ./src/utn_structBibCliente.o \
 ./src/utn_structBibPedido.o 
 
 C_DEPS += \
-./src/primelParcialv1.d \
+./src/primerParcial.d \
 ./src/utn_inputs.d \
 ./src/utn_structBibCliente.d \
 ./src/utn_structBibPedido.d 

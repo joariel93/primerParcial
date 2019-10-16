@@ -17,7 +17,7 @@
 
 #define MAXCLIENTE 100
 #define MAXPEDIDOS 1000
-#define MAXCUIT 12
+#define MAXCUIT 14
 #define MAXDIRECCION 30
 #define MAXNOMBRE 51
 int main(void){

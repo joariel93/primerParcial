@@ -23,19 +23,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: primelParcialv1
+all: primerParcial
 
 # Tool invocations
-primelParcialv1: $(OBJS) $(USER_OBJS)
+primerParcial: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "primelParcialv1" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc  -o "primerParcial" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) primelParcialv1
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) primerParcial
 	-@echo ' '
 
 .PHONY: all clean dependents

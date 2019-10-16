@@ -11,7 +11,7 @@ struct cliente
 {
 	int id;
 	char name[51];
-	char cuit[12];
+	char cuit[14];
 	char calle[30];
 	char localidad[30];
 	int pedidos;
