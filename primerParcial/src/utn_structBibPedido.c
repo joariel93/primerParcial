@@ -1,17 +1,16 @@
 /*
- * structBib.c
+ * utn_structBibPedido.c
  *
- *  Created on: 10 oct. 2019
- *      Author: alumno
+ *  Created on: 16 oct. 2019
+ *      Author: joariel93
  */
-
 #include <stdio.h>
 #include <stdio_ext.h>
 #include <stdlib.h>
 #include <string.h>
 #include "utn_inputs.h"
 #include "utn_structBibCliente.h"
-
+#include "utn_structBibPedido.h"
 #define SECURITY " fué el peso ingresado, confirma ingreso?"
 int utn_initSistemPedidos(pedido pArray[],int limite)
 {
@@ -70,7 +69,6 @@ int utn_addPedido(cliente array[],pedido pArray[],int limiteClientes,int limiteP
 int posicion;
 int retorno=-1;
 float kilos;
-int estado;
 int idCliente;
 int empty[2]={0,0};
 int seleccion;
@@ -79,7 +77,7 @@ int errorDatos=1;
 
  if(pArray!=NULL&&limitePedidos>0&&contador>=0)
  {
-	 if(utn_findFreeEmployee(pArray,limitePedidos,&posicion)==-1)
+	 if(utn_findFreePedido(pArray,limitePedidos,&posicion)==-1)
 	 {
 		 printf("\n No hay lugares vacios");
 	 }
@@ -102,7 +100,7 @@ int errorDatos=1;
 		 	 	 	 	pArray[posicion].recolectado=kilos;
 		 	 	 	 	empty[1]=1;
 	 					break;
-		 	 default:	utn_comprobe(empty,2,&errorDatos);
+		 	 default:	utn_comprobePedido(empty,2,&errorDatos);
 		 		 	 	if(errorDatos==1)
 	 					{
 	 					printf("Falta ingresar datos.");
@@ -125,7 +123,7 @@ int errorDatos=1;
 
 return retorno;
 }
-int utn_procesarPedido(cliente arrayCliente,pedido pArray[],int limite)
+int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 {
 	int retorno = -1;
 	int volver;
@@ -138,7 +136,6 @@ int utn_procesarPedido(cliente arrayCliente,pedido pArray[],int limite)
 	float newHDPE;
 	float newLDPE;
 	float newPP;
-	int newSector;
 	while (end == 0)
 	{	utn_showPedidosPendientes(pArray,limite);
 		printf("[1] Ingresar el pedido a procesar:\n");
@@ -164,7 +161,7 @@ int utn_procesarPedido(cliente arrayCliente,pedido pArray[],int limite)
 						scanf("%d", &seleccion);
 						switch (seleccion)
 						{
-							case 1:	utn_getFloat(newHDPE, "Ingrese la cantidad de Polietileno de alta densidad: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
+							case 1:	utn_getFloat(&newHDPE,"Ingrese el peso de polietileno de alta densidad reciclado: ","Error debe ingresar un valor valido.",0,pesoMaximo,5);
 									while (definitiveModification == 0)
 									{
 										printf("%.2f %s\n",newHDPE,SECURITY);
@@ -187,7 +184,7 @@ int utn_procesarPedido(cliente arrayCliente,pedido pArray[],int limite)
 										}
 									}
 									break;
-							case 2:	utn_getFloat(newLDPE, "Ingrese la cantidad de Polietileno de baja densidad: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
+							case 2:	utn_getFloat(&newLDPE, "Ingrese la cantidad de Polietileno de baja densidad: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
 									while (definitiveModification == 0)
 									{
 										printf("%.2f %s\n",newHDPE,SECURITY);
@@ -210,7 +207,7 @@ int utn_procesarPedido(cliente arrayCliente,pedido pArray[],int limite)
 										}
 									}
 									break;
-							case 3:		utn_getFloat(newHDPE, "Ingrese la cantidad de Poliproleno: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
+							case 3:		utn_getFloat(&newPP, "Ingrese la cantidad de Poliproleno: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
 										while (definitiveModification == 0)
 										{
 										printf("%.2f %s\n",newPP,SECURITY);
@@ -261,13 +258,13 @@ int utn_reportPedidosPendientes(cliente array[],pedido pArray[],int limite)
 	{
 		if(pArray[i].isEmpty==1&&pArray[i].estado==1&&array[pArray[i].idCliente].isEmpty==1)
 		{
-			printf("%d\t%s\t\t%d\n",array[pArray[i].idCliente].cuit,array[pArray[i].idCliente].calle,pArray[i].recolectado);
+			printf("%s\t%s\t\t%.2f\n",array[pArray[i].idCliente].cuit,array[pArray[i].idCliente].calle,pArray[i].recolectado);
 		}else if(pArray[i].isEmpty==0)
 		{
 			continue;
 		}
 	}
-				return 0;
+	return 0;
 }
 int utn_reportPedidosProcesados(cliente array[],pedido pArray[],int limite)
 {
@@ -277,15 +274,15 @@ int utn_reportPedidosProcesados(cliente array[],pedido pArray[],int limite)
 	{
 		if(pArray[i].isEmpty==1&&pArray[i].estado==2&&array[pArray[i].idCliente].isEmpty==1)
 		{
-			printf("%d\t%s\t\t%d\n",array[pArray[i].idCliente].cuit,array[pArray[i].idCliente].calle,pArray[i].recolectado);
+			printf("%s\t%s\t\t%.2f\n",array[pArray[i].idCliente].cuit,array[pArray[i].idCliente].calle,pArray[i].recolectado);
 		}else if(pArray[i].isEmpty==0)
 		{
 			continue;
 		}
 	}
-				return 0;
+	return 0;
 }
-int utn_comprobe(int pArray[],int limite,int *errorDatos)
+int utn_comprobePedido(int pArray[],int limite,int *errorDatos)
 {
 	int i;
 	for(i=0;i<limite;i++)
@@ -306,9 +303,9 @@ int utn_comprobe(int pArray[],int limite,int *errorDatos)
 int utn_agregaID(cliente show[],int limiteCliente,int* idCliente)
 {
 	int id;
-	int idEnviado;
+	int idEnviado=idCliente;
 	utn_findClienteById(show,limiteCliente,&id,idEnviado);
-	&idCliente=id;
+	*idCliente=id;
 	return 0;
 }
 int utn_showPedidosPendientes(pedido pArray[],int limitePedidos)
@@ -327,7 +324,7 @@ int utn_showPedidosPendientes(pedido pArray[],int limitePedidos)
 			}
 			return 0;
 }
-int utn_compruebaPeso(float*pMax)
+int utn_compruebaPeso(float pMax)
 {
 	if(pMax<=0)
 		{
@@ -336,3 +333,4 @@ int utn_compruebaPeso(float*pMax)
 		}
 	return 0;
 }
+

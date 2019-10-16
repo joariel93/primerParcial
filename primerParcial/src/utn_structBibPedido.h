@@ -1,14 +1,13 @@
 /*
- * structBib.h
+ * utn_structBibPedido.h
  *
- *  Created on: 10 oct. 2019
- *      Author: alumno
+ *  Created on: 16 oct. 2019
+ *      Author: joariel93
  */
 
 #ifndef UTN_STRUCTBIBPEDIDO_H_
 #define UTN_STRUCTBIBPEDIDO_H_
-
-typedef struct
+struct pedido
 {
 	int idPedido;
 	int idCliente;
@@ -18,18 +17,21 @@ typedef struct
 	float LDPE;
 	float PP;
 	int isEmpty;
-}pedido;
+};
+typedef struct pedido pedido;
 #include "utn_structBibCliente.h"
+
 int utn_initSistemPedidos(pedido pArray[],int limite);
 int utn_findFreePedido(pedido pArray[],int limite,int* posicion);
 int utn_findPedidoById(pedido pArray[], int limite,int* posicion,int idEnviado);
-int utn_addPedido(pedido pArray[],int limite,int contador);
-int utn_procesarPedido(pedido pArray[],int limite);
-int utn_reportPedidosPendientes(pedido pArray[],int limite);
-int utn_reportPedidosProcesados(pedido pArray[],int limite);
-int utn_comprobe(int pArray[],int limite,int *errorDatos);
+int utn_addPedido(cliente array[],pedido pArray[],int limiteClientes,int limitePedidos,int contador);
+int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite);
+int utn_reportPedidosPendientes(cliente array[],pedido pArray[],int limite);
+int utn_reportPedidosProcesados(cliente array[],pedido pArray[],int limite);
+int utn_comprobePedido(int pArray[],int limite,int *errorDatos);
 int utn_agregaID(cliente show[],int limiteCliente,int* idCliente);
 int utn_showPedidosPendientes(pedido pArray[],int limitePedidos);
-int utn_compruebaPeso(float*pMax);
+int utn_compruebaPeso(float pMax);
+
 
 #endif /* UTN_STRUCTBIBPEDIDO_H_ */

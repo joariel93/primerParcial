@@ -1,9 +1,10 @@
 /*
- * inputs.c
+ * utn_inputs.c
  *
- *  Created on: 10 oct. 2019
- *      Author: alumno
+ *  Created on: 16 oct. 2019
+ *      Author: joariel93
  */
+
 #include <stdio.h>
 #include <stdio_ext.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@ int utn_getInt(int *pResultado,char *pMensaje,char *pMensajeError,int minimo,int
 		__fpurge(stdin);
 		if(scanf("%d",&number)==1 && number >= minimo && number <= maximo)
 		{
-			*pResultado = number;
+			pResultado = number;
 			retorno = 0;
 			break;
 		}
@@ -84,4 +85,37 @@ int utn_getString (char *pResultado,char *pMensaje,char *pMensajeError,int maxim
 	}
 	return retorno;
 }
+int utn_getStringCUIT (char *pResultado,char *pMensaje,char *pMensajeError,int maximo,int limite)
+{
+	int flagError=-1;
+	int i;
+	int retorno = -1;
+	char text[limite];
+	if(	pResultado != NULL && pMensaje	!= NULL &&	0< maximo)
+	{
+		while(flagError==-1)
+		{
+			flagError=0;
+			printf("%s",pMensaje);
+			__fpurge(stdin);
+			fgets(text,sizeof(text),stdin);
+			text[strlen(text)-1] = '\0';
+			if(strlen(text) == (maximo-1))
+			{
+				strncpy(pResultado,text,maximo);
+				retorno = 0;
+			}
+			for(i=0;i<strlen(text)-1;i++)
+			{
+				if(!((text[i]>='0'&&text[i]<='9')))
+				{
+					printf("%s\n",pMensajeError);
+					flagError=-1;
+					break;
+				}
+			}
+		}
 
+	}
+	return retorno;
+}

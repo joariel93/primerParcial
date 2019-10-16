@@ -1,15 +1,15 @@
 /*
- * structBib.c
+ * utn_structBibCliente.c
  *
- *  Created on: 10 oct. 2019
- *      Author: alumno
+ *  Created on: 16 oct. 2019
+ *      Author: joariel93
  */
-
 #include <stdio.h>
 #include <stdio_ext.h>
 #include <stdlib.h>
 #include <string.h>
 #include "utn_inputs.h"
+#include "utn_structBibCliente.h"
 
 #define SECURITY "Esta seguro de querer modificar la "
 int utn_initSistemCliente(cliente pArrayCliente[],int limite)
@@ -64,12 +64,12 @@ int i;
 	printf("No se ha encontrado el número de legajo ingresado\n");
 return retorno;
 }
-int utn_addCliente(cliente pArray[],int limite,int* contador,int nameLimit,int direcLimit)
+int utn_addCliente(cliente pArray[],int limite,int contador,int nameLimit,int direcLimit,int cuitLimit)
 {
 char names[nameLimit];
 int posicion;
 int retorno=-1;
-int icuit;
+char icuit[cuitLimit];
 char direccion[direcLimit];
 int empty[4]={0,0,0,0};
 int seleccion;
@@ -98,8 +98,8 @@ int errorDatos=1;
 		 	 	 	 	strncpy(pArray[posicion].name,names,nameLimit);
 		 	 	 	 	empty[0]=1;
 	 					break;
-		 	 case 2:	utn_getInt(&icuit,"Ingrese el numero de CUIT (sin guiones): ","Error debe ingresar un CUIT válido",20000000000,3399999999999,5);
-		 	 	 	 	pArray[posicion].cuit=&icuit;
+		 	 case 2:	utn_getStringCUIT(icuit,"Ingrese el numero de CUIT sin guiones: ","Error solo debe ingresar numeros",cuitLimit,cuitLimit);
+		 	 	 	 	strncpy(pArray[posicion].cuit,icuit,cuitLimit);
 		 	 	 	 	empty[1]=1;
 	 					break;
 		 	 case 3:	utn_getString(direccion,"Ingrese la dirección: ","Error debe ingresar caracteres alfabéticos",nameLimit,nameLimit);
@@ -110,16 +110,15 @@ int errorDatos=1;
 	 	 	 			strncpy(pArray[posicion].localidad,direccion,direcLimit);
 		 	 	 	 	empty[3]=1;
 	 					break;
-		 	 default:	utn_comprobe(empty,4,&errorDatos);
+		 	 default:	utn_comprobeCliente(empty,4,&errorDatos);
 		 		 	 	if(errorDatos==1)
 	 					{
-	 					printf("Falta ingresar datos.");
+	 					printf("Falta ingresar datos.\n");
 	 					}
 	 					else
 	 					{
 	 					pArray[posicion].isEmpty=1;
 	 					pArray[posicion].id=contador;
-	 					contador++;
 	 					retorno=0;
 	 					return retorno;
 	 					}
@@ -131,7 +130,7 @@ int errorDatos=1;
 return retorno;
 }
 int utn_modifyCliente(cliente pArray[],int limite,int stringLimit)
-{
+{	cliente aux[limite];
 	int retorno = -1;
 	int volver;
 	int seleccion;
@@ -140,6 +139,7 @@ int utn_modifyCliente(cliente pArray[],int limite,int stringLimit)
 	int end = 0;
 	int definitiveModification = 0;
 	char newDireccion[stringLimit];
+
 	while (end == 0)
 	{
 		printf("[1] Ingresar ID de cliente a modificar\n");
@@ -150,7 +150,8 @@ int utn_modifyCliente(cliente pArray[],int limite,int stringLimit)
 		{
 			case 2:	return 0;
 					break;
-			default:printf("Ingrese el numero de legajo del cliente que desea modificar: ");
+			default:utn_showClientes(pArray,limite);
+					printf("Ingrese el numero de legajo del cliente que desea modificar: ");
 					__fpurge(stdin);
 					scanf("%d", &legajo);
 					if (utn_findClienteById(pArray, limite, &posicion, legajo) == 0)
@@ -166,13 +167,14 @@ int utn_modifyCliente(cliente pArray[],int limite,int stringLimit)
 							case 1:	utn_getString(newDireccion, "Ingrese nueva dirección: ","Error ha superado la cantidad de caracteres(30).", stringLimit,stringLimit);
 									while (definitiveModification == 0)
 									{
-										printf("%s dirección de %s a %s?\n", SECURITY,pArray[posicion].calle, newDireccion);
+										printf("%s dirección de %s a %s?\n", SECURITY,aux[posicion].calle, newDireccion);
 										printf("[1] Si\n[2] No\n");
 										__fpurge(stdin);
 										scanf("%d", &definitiveModification);
 										switch (definitiveModification)
 										{
-											case 1:	strncpy(pArray[posicion].calle, newDireccion, stringLimit);
+											case 1:	strncpy(aux[posicion].calle, newDireccion, stringLimit);
+													strncpy(pArray[posicion].calle, aux[posicion].calle, stringLimit);
 													end=1;
 													break;
 											case 2:	break;
@@ -182,13 +184,14 @@ int utn_modifyCliente(cliente pArray[],int limite,int stringLimit)
 							case 2:	utn_getString(newDireccion, "Ingrese nueva localidad: ","Error ha superado la cantidad de caracteres(30)", stringLimit, stringLimit);
 									while (definitiveModification == 0)
 									{
-										printf("%s localidad de %s a %s?\n", SECURITY,pArray[posicion].localidad, newDireccion);
+										printf("%s localidad de %s a %s?\n", SECURITY,aux[posicion].localidad, newDireccion);
 										printf("[1] Si\n[2] No\n");
 										__fpurge(stdin);
 										scanf("%d", &definitiveModification);
 										switch (definitiveModification)
 										{
-											case 1:	strncpy(pArray[posicion].localidad, newDireccion,stringLimit);
+											case 1:	strncpy(aux[posicion].localidad, newDireccion,stringLimit);
+													strncpy(pArray[posicion].localidad, aux[posicion].localidad, stringLimit);
 													end=1;
 													break;
 											case 2:	break;
@@ -230,7 +233,7 @@ while (end == 0)
 			default:printf("Ingrese el numero de id de cliente que desea eliminar: ");
 					__fpurge(stdin);
 					scanf("%d", &legajo);
-					if (utn_findEmployeeById(pArray, limite, &posicion, legajo) == 0)
+					if (utn_findClienteById(pArray, limite, &posicion, legajo) == 0)
 					{
 						printf("Desea eliminar a %s\n",pArray[posicion].name);
 						printf("[1] Si\n[2] No\n");
@@ -260,7 +263,7 @@ while (end == 0)
 
 return 0;
 }
-int utn_comprobe(int pArray[],int limite,int *errorDatos)
+int utn_comprobeCliente(int pArray[],int limite,int *errorDatos)
 {
 	int i;
 	for(i=0;i<limite;i++)
@@ -302,7 +305,7 @@ int utn_imprimirClientes(cliente pArray[],int limiteCliente)
 			{
 					if(pArray[i].isEmpty==1)
 					{
-						printf("%d\t%s\t\t%d\t%s\t\t%s\t\t%d\n",pArray[i].id,pArray[i].name,pArray[i].cuit,pArray[i].calle,pArray[i].localidad,pArray[i].pedidos);
+						printf("%d\t%s\t\t%s\t%s\t\t%s\t\t%d\n",pArray[i].id,pArray[i].name,pArray[i].cuit,pArray[i].calle,pArray[i].localidad,pArray[i].pedidos);
 					}else if(pArray[i].isEmpty==0)
 					{
 						continue;
@@ -310,3 +313,4 @@ int utn_imprimirClientes(cliente pArray[],int limiteCliente)
 			}
 			return 0;
 }
+
