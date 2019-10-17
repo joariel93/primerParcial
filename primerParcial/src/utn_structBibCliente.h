@@ -28,6 +28,6 @@ int utn_removeCliente(cliente pArray[],int limite);
 int utn_comprobeCliente(int pArray[],int limite,int *errorDatos);
 int utn_showClientes(cliente pArray[],int limite);
 int utn_imprimirClientes(cliente pArray[],int limiteCliente);
-
+int utn_masPedidosPendientes(cliente pArray[],int limiteCliente);
 
 #endif /* UTN_STRUCTBIBCLIENTE_H_ */
