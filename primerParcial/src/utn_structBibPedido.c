@@ -69,8 +69,8 @@ int utn_addPedido(cliente array[],pedido pArray[],int limiteClientes,int limiteP
 int posicion;
 int retorno=-1;
 float kilos;
-int idCliente;
-int empty[2]={0,0};
+int idClientes;
+int empty[1]={0};
 int seleccion;
 int end=0;
 int errorDatos=1;
@@ -86,21 +86,19 @@ int errorDatos=1;
 	 	 {	 utn_showClientes(array,limiteClientes);
 		 	 printf("Pantalla de ingreso de datos:\n");
 		 	 printf("[1] ID de cliente\n");
-		 	 printf("[2] Kilos totales de recoleccion\n");
-		 	 printf("[3] Volver\n");
+		 	 printf("[2] Volver\n");
 		 	 __fpurge(stdin);
 		 	 scanf("%d",&seleccion);
 		 	 switch(seleccion)
 		 	 {
-		 	 case 1:	utn_agregaID(array,limiteClientes,&idCliente);
-		 	 	 	 	pArray[posicion].idCliente=idCliente;
+		 	 case 1:	utn_agregaID(array,limiteClientes,&idClientes);
+		 	 	 	 	pArray[posicion].idCliente=idClientes;
+		 	 	 	 	utn_getFloat(&kilos,"Ingrese la cantidad de kilos a recolectar","Error debe ingresar un peso válido",0.1,5000,5);
+		 	 	 	 	pArray[posicion].recolectado=kilos;
 		 	 	 	 	empty[0]=1;
 	 					break;
-		 	 case 2:	utn_getFloat(&kilos,"Ingrese la cantidad de kilos a recolectar","Error debe ingresar un peso válido",0.1,5000,5);
-		 	 	 	 	pArray[posicion].recolectado=kilos;
-		 	 	 	 	empty[1]=1;
-	 					break;
-		 	 default:	utn_comprobePedido(empty,2,&errorDatos);
+
+		 	 default:	utn_comprobePedido(empty,1,&errorDatos);
 		 		 	 	if(errorDatos==1)
 	 					{
 	 					printf("Falta ingresar datos.");
@@ -108,11 +106,12 @@ int errorDatos=1;
 	 					else
 	 					{
 	 					pArray[posicion].isEmpty=1;
+	 					pArray[posicion].estado=1;
 	 					pArray[posicion].idPedido=contador;
 	 					pArray[posicion].HDPE=0;
 	 					pArray[posicion].LDPE=0;
 	 					pArray[posicion].PP=0;
-	 					array[idCliente].pedidos++;
+	 					array[idClientes].pedidos++;
 	 					retorno=0;
 	 					return retorno;
 	 					}
@@ -127,16 +126,18 @@ return retorno;
 int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 {
 	int retorno = -1;
+	int flag=0;
 	int volver;
 	int seleccion;
 	float pesoMaximo;
 	int posicion;
 	int nPedido;
 	int end = 0;
-	int definitiveModification = 0;
-	float newHDPE;
-	float newLDPE;
-	float newPP;
+	int auxId;
+
+	float newHDPE=0;
+	float newLDPE=0;
+	float newPP=0;
 	while (end == 0)
 	{	utn_showPedidosPendientes(pArray,limite);
 		printf("[1] Ingresar el pedido a procesar:\n");
@@ -150,10 +151,11 @@ int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 			default:printf("Ingrese el numero de pedido que desea procesar: ");
 					__fpurge(stdin);
 					scanf("%d", &nPedido);
-					if (utn_findPedidoById(pArray, limite, &posicion, nPedido) == 0)
+					if (utn_findPedidoById(pArray, limite, &posicion, nPedido) == 0&&flag==0)
 					{
 						pesoMaximo=pArray[posicion].recolectado;
-						printf("Ingrese los tipos de plásticos procesados del pedido %d:\n", pArray[posicion].idPedido);
+						auxId=pArray[posicion].idCliente;
+						printf("Ingrese los tipos de plásticos procesados del pedido %d quedan por asignar:\n", pArray[posicion].idPedido,pesoMaximo);
 						printf("[1] Polietileno de alta densidad\n");
 						printf("[2] Polietileno de baja densidad\n");
 						printf("[3] Polipropileno\n");
@@ -163,83 +165,110 @@ int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 						switch (seleccion)
 						{
 							case 1:	utn_getFloat(&newHDPE,"Ingrese el peso de polietileno de alta densidad reciclado: ","Error debe ingresar un valor valido.",0,pesoMaximo,5);
-									while (definitiveModification == 0)
+									pArray[posicion].HDPE=newHDPE;
+									pesoMaximo=pesoMaximo-newHDPE;
+									if(pesoMaximo<0||utn_compruebaPeso(pesoMaximo)==1)
 									{
-										printf("%.2f %s\n",newHDPE,SECURITY);
-										printf("[1] Si\n[2] No\n");
-										__fpurge(stdin);
-										scanf("%d", &definitiveModification);
-										switch (definitiveModification)
-										{
-										case 1:	pArray[posicion].HDPE=newHDPE;
-												pesoMaximo=pesoMaximo-newHDPE;
-												if(utn_compruebaPeso(pesoMaximo)==1)
-												{
-												pArray[posicion].estado=1;
-												arrayCliente[pArray[posicion].idCliente].pedidos--;
-												}
-												end=1;
-												break;
-										case 2:	break;
-										}
+										pArray[posicion].estado=2;
+										arrayCliente[auxId].pedidos--;
+										printf("me meti al if por algun motivo");
+										return 0;
 									}
-									seleccion=0;
-									definitiveModification=0;
+									pArray[posicion].estado=2;
+									arrayCliente[auxId].pedidos--;
+									flag=1;
+									printf("Me saltie el if, el pendiente de pedidos por procesar quedo en %d",arrayCliente[auxId].pedidos);
 									break;
 							case 2:	utn_getFloat(&newLDPE, "Ingrese la cantidad de Polietileno de baja densidad: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
-									while (definitiveModification == 0)
+									pArray[posicion].LDPE=newHDPE;
+									pesoMaximo=pesoMaximo-newLDPE;
+									if(pesoMaximo<0||utn_compruebaPeso(pesoMaximo)==1)
 									{
-										printf("%.2f %s\n",newHDPE,SECURITY);
-										printf("[1] Si\n[2] No\n");
-										__fpurge(stdin);
-										scanf("%d", &definitiveModification);
-										switch (definitiveModification)
-										{
-										case 1:	pArray[posicion].LDPE=newHDPE;
-												pesoMaximo=pesoMaximo-newLDPE;
-												if(utn_compruebaPeso(pesoMaximo)==1)
-												{
-												pArray[posicion].estado=1;
-												arrayCliente[pArray[posicion].idCliente].pedidos--;
-												}
-												end=1;
-												break;
-										case 2:	break;
-										}
+										pArray[posicion].estado=2;
+										arrayCliente[auxId].pedidos--;
+										flag=1;
 									}
 									break;
-							case 3:		utn_getFloat(&newPP, "Ingrese la cantidad de Poliproleno: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
-										while (definitiveModification == 0)
-										{
-										printf("%.2f %s\n",newPP,SECURITY);
-										printf("[1] Si\n[2] No\n");
-										__fpurge(stdin);
-										scanf("%d", &definitiveModification);
-										switch (definitiveModification)
-											{
-											case 1:	pArray[posicion].PP=newPP;
-													pesoMaximo=pesoMaximo-newPP;
-													if(utn_compruebaPeso(pesoMaximo)==1)
-													{
-														pArray[posicion].estado=1;
-														arrayCliente[pArray[posicion].idCliente].pedidos--;
-													}
-													end=1;
-													break;
-											case 2:	break;
-											}
-										}
-										break;
+
+							case 3:	utn_getFloat(&newPP, "Ingrese la cantidad de Poliproleno: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
+									pArray[posicion].PP=newPP;
+									pesoMaximo=pesoMaximo-newPP;
+									if(pesoMaximo<0||utn_compruebaPeso(pesoMaximo)==1)
+									{
+										pArray[posicion].estado=2;
+										arrayCliente[auxId].pedidos--;
+										flag=1;
+									}
+									break;
 							default:	if(pesoMaximo==pArray[posicion].recolectado)
 										{
 										pArray[posicion].estado=1;
+										end=1;
 										}
 										else
 										{
 										pArray[posicion].estado=2;
+										end=1;
+										flag=1;
 										}
 										break;
 						}
+					}
+					else
+					{
+						printf("Ingrese los tipos de plásticos procesados del pedido %d quedan por asignar:\n", pArray[posicion].idPedido,pesoMaximo);
+												printf("[1] Polietileno de alta densidad\n");
+												printf("[2] Polietileno de baja densidad\n");
+												printf("[3] Polipropileno\n");
+												printf("[4] Volver\n");
+												__fpurge(stdin);
+												scanf("%d", &seleccion);
+												switch (seleccion)
+												{
+													case 1:	utn_getFloat(&newHDPE,"Ingrese el peso de polietileno de alta densidad reciclado: ","Error debe ingresar un valor valido.",0,pesoMaximo,5);
+															pArray[posicion].HDPE=newHDPE;
+															pesoMaximo=pesoMaximo-newHDPE;
+															if(pesoMaximo<0||utn_compruebaPeso(pesoMaximo)==1)
+															{
+																pArray[posicion].estado=2;
+																arrayCliente[auxId].pedidos--;
+																printf("me meti al if por algun motivo");
+																return 0;
+															}
+															pArray[posicion].estado=2;
+															arrayCliente[auxId].pedidos--;
+															printf("Me saltie el if, el pendiente de pedidos por procesar quedo en %d",arrayCliente[auxId].pedidos);
+															break;
+													case 2:	utn_getFloat(&newLDPE, "Ingrese la cantidad de Polietileno de baja densidad: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
+															pArray[posicion].LDPE=newHDPE;
+															pesoMaximo=pesoMaximo-newLDPE;
+															if(pesoMaximo<0||utn_compruebaPeso(pesoMaximo)==1)
+															{
+																pArray[posicion].estado=2;
+																arrayCliente[auxId].pedidos--;
+															}
+															break;
+													case 3:	utn_getFloat(&newPP, "Ingrese la cantidad de Poliproleno: ","Error debe ingresar un peso válido",0,pesoMaximo,5);
+															pArray[posicion].PP=newPP;
+															pesoMaximo=pesoMaximo-newPP;
+															if(pesoMaximo<0||utn_compruebaPeso(pesoMaximo)==1)
+															{
+																pArray[posicion].estado=2;
+																arrayCliente[auxId].pedidos--;
+															}
+															break;
+													default:	if(pesoMaximo==pArray[posicion].recolectado)
+																{
+																pArray[posicion].estado=1;
+																end=1;
+																}
+																else
+																{
+																pArray[posicion].estado=2;
+																end=1;
+																}
+																break;
+												}
 					}
 					break;
 			}
@@ -250,15 +279,18 @@ int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite)
 	return retorno;
 
 }
-int utn_reportPedidosPendientes(cliente array[],pedido pArray[],int limite)
+int utn_reportPedidosPendientes(cliente cArray[],pedido pArray[],int limite)
 {
 	int i;
+	int auxId;
+
 	printf("CUIT\tDirección\t\tKg. a recolectar\n");
 	for(i=0;i<limite;i++)
 	{
-		if(pArray[i].isEmpty==1&&pArray[i].estado==1&&array[pArray[i].idCliente].isEmpty==1)
+		auxId=pArray[i].idCliente;
+		if(pArray[i].isEmpty==1&&pArray[i].estado==1&&cArray[auxId].isEmpty==1)
 		{
-			printf("%s\t%s\t\t%.2f\n",array[pArray[i].idCliente].cuit,array[pArray[i].idCliente].calle,pArray[i].recolectado);
+			printf("%s\t%s\t\t%.2f\n",cArray[auxId].cuit,cArray[auxId].calle,pArray[i].recolectado);
 		}else if(pArray[i].isEmpty==0)
 		{
 			continue;
@@ -317,10 +349,10 @@ int utn_showPedidosPendientes(pedido pArray[],int limitePedidos)
 	printf("ID Pedido\tID Cliente\tKilos\n");
 			for(i=0;i<limitePedidos;i++)
 			{
-					if(pArray[i].isEmpty==1)
+					if(pArray[i].isEmpty==1&&pArray[i].estado==1)
 					{
 						printf("%d\t%d\t%.2f\n",pArray[i].idPedido,pArray[i].idCliente,pArray[i].recolectado);
-					}else if(pArray[i].isEmpty==0)
+					}else if(pArray[i].isEmpty==0||pArray[i].estado!=1)
 					{
 						continue;
 					}

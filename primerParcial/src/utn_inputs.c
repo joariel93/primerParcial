@@ -73,7 +73,7 @@ int utn_getString (char *pResultado,char *pMensaje,char *pMensajeError,int maxim
 			}
 			for(i=0;i<strlen(text)-1;i++)
 			{
-				if(!((text[i]>='A'&&text[i]<='Z')||(text[i]>='a'&&text[i]<='z')))
+				if(!((text[i]>='A'&&text[i]<='Z')||(text[i]>='a'&&text[i]<='z')||text[i]==' '||(text[i]>='0'&&text[i]<='9')||text[i]=='.'))
 				{
 					printf("%s\n",pMensajeError);
 					flagError=-1;
@@ -88,34 +88,34 @@ int utn_getString (char *pResultado,char *pMensaje,char *pMensajeError,int maxim
 int utn_getStringCUIT (char *pResultado,char *pMensaje,char *pMensajeError,int maximo,int limite)
 {
 	int flagError=-1;
-	int i;
-	int retorno = -1;
-	char text[limite];
-	if(	pResultado != NULL && pMensaje	!= NULL &&	0< maximo)
-	{
-		while(flagError==-1)
+		int i;
+		int retorno = -1;
+		char text[limite];
+		if(	pResultado != NULL && pMensaje	!= NULL &&	0< maximo)
 		{
-			flagError=0;
-			printf("%s",pMensaje);
-			__fpurge(stdin);
-			fgets(text,sizeof(text),stdin);
-			text[strlen(text)-1] = '\0';
-			if(strlen(text) == (maximo-1))
+			while(flagError==-1)
 			{
-				strncpy(pResultado,text,maximo);
-				retorno = 0;
-			}
-			for(i=0;i<strlen(text)-1;i++)
-			{
-				if(!((text[i]>='0'&&text[i]<='9')))
+				flagError=0;
+				printf("%s",pMensaje);
+				__fpurge(stdin);
+				fgets(text,sizeof(text),stdin);
+				text[strlen(text)-1] = '\0';
+				if(strlen(text) <= maximo)
 				{
-					printf("%s\n",pMensajeError);
-					flagError=-1;
-					break;
+					strncpy(pResultado,text,maximo+1);
+					retorno = 0;
+				}
+				for(i=0;i<strlen(text)-1;i++)
+				{
+					if(!((text[i]>='0'&&text[i]<='9')||text[i]=='-'))
+					{
+						printf("%s\n",pMensajeError);
+						flagError=-1;
+						break;
+					}
 				}
 			}
-		}
 
-	}
-	return retorno;
+		}
+		return retorno;
 }
