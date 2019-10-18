@@ -16,6 +16,7 @@ struct pedido
 	float HDPE;
 	float LDPE;
 	float PP;
+	float totalReciclado;
 	int isEmpty;
 };
 typedef struct pedido pedido;

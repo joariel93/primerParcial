@@ -54,12 +54,14 @@ for(k=0;k<limite;k++)
 		aux[k].estado=pArray[k].estado;
 		aux[k].idCliente=pArray[k].idCliente;
 	}
+	else
+		aux[k].estado=0;
 }
 for(i=0;i<limite;i++)
 {
 	if(aux[i].estado==2)
 	{
-		for(j=0;j<(limite-1);j++)
+		for(j=1;j<(limite-1);j++)
 		{
 			if(aux[i].idCliente==aux[j].idCliente)
 			{
@@ -129,12 +131,14 @@ for(i=0;i>limite;i++)
 return guardaId[0];
 
 }
-int utn_clienteMasReciclador(cliente cArray[],pedido pArray[],int limiteCliente,int limitePedidos)
+int utn_recicladores(cliente cArray[],pedido pArray[],int limiteCliente,int limitePedidos,int*IDmas,int*posMas,int*IDmen,int*posMen,int*masMil,int*menCien)
 {
 cliente auxCliente[limiteCliente];
-cliente acumulador[limiteCliente]
 pedido auxPedidos[limitePedidos];
-int i;
+pedido filtraPedidos[limitePedidos];
+pedido auxFiltraPedido;
+float pesoTotal=0;
+int i,j,k;
 for(i=0;i<limiteCliente;i++)
 {
 	if(cArray[i].isEmpty==1)
@@ -158,9 +162,58 @@ for(i=0;i>limitePedidos;i++)
 	}
 
 }
+for(j=0;j<limitePedidos;j++)
+{
+	for(k=1;k<limitePedidos-1;k++)
+	{
+		if(auxPedidos[j].idCliente==auxPedidos[k].idCliente)
+		{
+			filtraPedidos[j].idCliente=auxPedidos[j].idCliente;
+			filtraPedidos[j].totalReciclado=auxPedidos[j].totalReciclado+auxPedidos[k].totalReciclado;
+		}
+		else
+		{
+			continue;
+		}
+	}
 
-
-
+}
+for(i=0;i<limitePedidos;i++)
+{
+	if(filtraPedidos[i].totalReciclado<filtraPedidos[i+1].totalReciclado)
+	{
+		auxFiltraPedido=filtraPedidos[i];
+		filtraPedidos[i]=filtraPedidos[i+1];
+		filtraPedidos[i+1]=auxFiltraPedido;
+	}
+}
+IDmas=filtraPedidos[0].idCliente;
+posMas=utn_findClienteById(cArray,limiteCliente,&posMas,IDmas);
+for(i=0;i<limitePedidos;i++)
+{
+	if(filtraPedidos[i].totalReciclado>filtraPedidos[i+1].totalReciclado)
+	{
+		auxFiltraPedido=filtraPedidos[i];
+		filtraPedidos[i]=filtraPedidos[i+1];
+		filtraPedidos[i+1]=auxFiltraPedido;
+	}
+}
+IDmen=filtraPedidos[0].idCliente;
+posMen=utn_findClienteById(cArray,limiteCliente,&posMen,IDmen);
+for(i=0;i<limitePedidos;i++)
+{
+	if(filtraPedidos[i].totalReciclado>1000)
+	{
+		masMil++;
+	}
+}
+for(i=0;i<limitePedidos;i++)
+{
+	if(filtraPedidos[i].totalReciclado<100)
+	{
+		menCien++;
+	}
+}
 	return 0;
 }
 int utn_informesParcial(cliente cArray[],pedido pArray[], int limiteCliente,int limitePedidos)
@@ -169,6 +222,10 @@ int IDmasPP,posMasPP;
 int IDmasPC,posMasPC;
 int IDmasP,posMasP;
 int IDmasR,posMasR;
+int IDmenR,posMenR;
+int cMas1000=0;
+int cMenos100=0;
+
 
 
 IDmasPP=utn_masPedidosPendientes(cArray,limiteCliente);
@@ -177,12 +234,15 @@ IDmasPC=utn_masPedidosCompletados(pArray,limitePedidos);
 posMasPC=utn_findClienteById(cArray,limiteCliente,&posMasPC,IDmasPP);
 IDmasP=utn_masPedidosCompletados(pArray,limitePedidos);
 posMasP=utn_findClienteById(cArray,limiteCliente,&posMasP,IDmasP);
-IDmasR=utn_clienteMasReciclador(cArray,pArray,limiteCliente,limitePedidos);
-posMasR=utn_findClienteById(cArray,limiteCliente,&posMasR,IDmasR);
+utn_recicladores(cArray,pArray,limiteCliente,limitePedidos,&IDmasR,&posMasR,&IDmenR,&posMenR,&cMas1000,&cMenos100);
+
 
 printf("El cliente con más pedidos pendientes es: %s con %d pedidos pendientes.\n",cArray[posMasPP].name,cArray[posMasPP].pedidos);
 printf("El cliente con más pedidos completados es: %s con %d pedidos completados.\n",cArray[posMasPC].name,cArray[posMasPC].pedidos);
 printf("El cliente con más pedidos solicitados es: %s con %d pedidos solicitados.\n",cArray[posMasP].name,cArray[posMasP].pedidos);
 printf("El cliente que mas kilos ha reciclado es: %s.\n",cArray[posMasR].name);
+printf("El cliente que menos kilos ha reciclado es: %s.\n",cArray[posMenR].name);
+printf("%d clientes han reciclado más de 1000 kilos.\n",cMas1000);
+printf("%d clientes han reciclado menos de 100 kilos.\n",cMenos100);
 return 0;
 }
