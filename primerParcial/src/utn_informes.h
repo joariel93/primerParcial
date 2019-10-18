@@ -17,6 +17,6 @@
 int utn_masPedidosPendientes(cliente pArray[],int limiteCliente);
 int utn_masPedidosCompletados(pedido pArray[],int limite);
 int utn_clienteMasPedidos(pedido pArray[],int limite);
-int utn_clienteMasReciclador(pedido pArray[],int limite);
+int utn_clienteMasReciclador(cliente cArray[],pedido pArray[],int limiteCliente,int limitePedidos);
 int utn_informesParcial(cliente cArray[],pedido pArray[], int limiteCliente,int limitePedidos);
 #endif /* UTN_INFORMES_H_ */

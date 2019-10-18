@@ -129,18 +129,47 @@ for(i=0;i>limite;i++)
 return guardaId[0];
 
 }
-int utn_clienteMasReciclador(pedido pArray[],int limite)
+int utn_clienteMasReciclador(cliente cArray[],pedido pArray[],int limiteCliente,int limitePedidos)
 {
+cliente auxCliente[limiteCliente];
+cliente acumulador[limiteCliente]
+pedido auxPedidos[limitePedidos];
+int i;
+for(i=0;i<limiteCliente;i++)
+{
+	if(cArray[i].isEmpty==1)
+	{
+		auxCliente[i]=cArray[i];
+	}
+	else
+	{
+		continue;
+	}
+}
+for(i=0;i>limitePedidos;i++)
+{
+	if(pArray[i].isEmpty==1)
+	{
+		auxPedidos[i]=pArray[i];
+	}
+	else
+	{
+		continue;
+	}
+
+}
+
+
+
 	return 0;
 }
 int utn_informesParcial(cliente cArray[],pedido pArray[], int limiteCliente,int limitePedidos)
 {
-int IDmasPP;
-int posMasPP;
-int IDmasPC;
-int posMasPC;
-int IDmasP;
-int posMasP;
+int IDmasPP,posMasPP;
+int IDmasPC,posMasPC;
+int IDmasP,posMasP;
+int IDmasR,posMasR;
+
 
 IDmasPP=utn_masPedidosPendientes(cArray,limiteCliente);
 posMasPP=utn_findClienteById(cArray,limiteCliente,&posMasPP,IDmasPP);
@@ -148,10 +177,12 @@ IDmasPC=utn_masPedidosCompletados(pArray,limitePedidos);
 posMasPC=utn_findClienteById(cArray,limiteCliente,&posMasPC,IDmasPP);
 IDmasP=utn_masPedidosCompletados(pArray,limitePedidos);
 posMasP=utn_findClienteById(cArray,limiteCliente,&posMasP,IDmasP);
-
+IDmasR=utn_clienteMasReciclador(cArray,pArray,limiteCliente,limitePedidos);
+posMasR=utn_findClienteById(cArray,limiteCliente,&posMasR,IDmasR);
 
 printf("El cliente con más pedidos pendientes es: %s con %d pedidos pendientes.\n",cArray[posMasPP].name,cArray[posMasPP].pedidos);
 printf("El cliente con más pedidos completados es: %s con %d pedidos completados.\n",cArray[posMasPC].name,cArray[posMasPC].pedidos);
 printf("El cliente con más pedidos solicitados es: %s con %d pedidos solicitados.\n",cArray[posMasP].name,cArray[posMasP].pedidos);
+printf("El cliente que mas kilos ha reciclado es: %s.\n",cArray[posMasR].name);
 return 0;
 }
