@@ -102,7 +102,6 @@ int errorDatos=1;
 		 	 	 	 	pArray[posicion].HDPE=0;
 		 	 	 	 	pArray[posicion].LDPE=0;
 		 	 	 	 	pArray[posicion].PP=0;
-		 	 	 	 	pArray[posicion].totalReciclado=0;
 		 	 	 	 	array[idClientes].pedidos++;
 		 	 	 	 	end=1;
 	 					break;
@@ -297,4 +296,37 @@ int utn_compruebaPeso(float pMax)
 		}
 	return 0;
 }
+int utn_getPedidoAux(pedido pArray[],pedido auxPedido[],int limitePedidos)
+{
+	int i;
 
+	for(i=0;i<limitePedidos;i++)
+	{
+		if(pArray[i].isEmpty==1)
+		{
+			auxPedido[i]=pArray[i];
+		}
+		else
+		{
+			continue;
+		}
+	}
+	return 0;
+}
+int utn_limpiarRecolectado(pedido pArray[],int limitePedidos)
+{
+	int i;
+	for(i=0;i<limitePedidos;i++)
+	{
+		pArray[i].recolectado=0;
+	}
+
+	return 0;
+}
+int	utn_sumarCategoriasPlasticos(pedido pArray[],int limitePedidos)
+{
+	int i;
+
+
+	return 0;
+}

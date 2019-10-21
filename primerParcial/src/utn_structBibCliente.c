@@ -313,4 +313,32 @@ int utn_imprimirClientes(cliente pArray[],int limiteCliente)
 			}
 			return 0;
 }
+int utn_getClienteAux(cliente cArray[],cliente auxCliente[],int limiteCliente)
+{
+	int i;
 
+	for(i=0;i<limiteCliente;i++)
+	{
+		if(cArray[i].isEmpty==1)
+		{
+			auxCliente[i]=cArray[i];
+		}
+		else
+		{
+			continue;
+		}
+	}
+	return 0;
+}
+int utn_limpiarPedidosClientes(cliente cArray[],int limiteClientes)
+{
+	int i;
+	for(i=0;i<limiteClientes;i++)
+	{
+		if(cArray[i].isEmpty==1)
+		{
+			cArray[i].pedidos=0;
+		}
+	}
+	return 0;
+}

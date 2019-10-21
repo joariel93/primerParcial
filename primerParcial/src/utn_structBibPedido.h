@@ -16,7 +16,6 @@ struct pedido
 	float HDPE;
 	float LDPE;
 	float PP;
-	float totalReciclado;
 	int isEmpty;
 };
 typedef struct pedido pedido;
@@ -33,6 +32,9 @@ int utn_comprobePedido(int pArray[],int limite,int *errorDatos);
 int utn_agregaID(cliente show[],int limiteCliente,int* idCliente);
 int utn_showPedidosPendientes(pedido pArray[],int limitePedidos);
 int utn_compruebaPeso(float pMax);
+int utn_getPedidoAux(pedido pArray[],pedido auxPedido[],int limitePedidos);
+int utn_limpiarRecolectado(pedido pArray[],int limitePedidos);
+int	utn_sumarCategoriasPlasticos(pedido pArray[],int limitePedidos);
 
 
 #endif /* UTN_STRUCTBIBPEDIDO_H_ */
