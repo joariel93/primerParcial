@@ -308,6 +308,7 @@ int utn_imprimirClientes(cliente pArray[],int limiteCliente)
 						printf("%d\t%s\t\t%s\t%s\t\t%s\t\t%d\n",pArray[i].id,pArray[i].name,pArray[i].cuit,pArray[i].calle,pArray[i].localidad,pArray[i].pedidos);
 					}else if(pArray[i].isEmpty==0)
 					{
+						printf("por algun motivo no entre al if");
 						continue;
 					}
 			}

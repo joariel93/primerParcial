@@ -15,6 +15,7 @@
 #include "utn_structBibCliente.h"
 #include "utn_structBibPedido.h"
 #include "utn_informes.h"
+#include "hardcodeo.h"
 
 #define MAXCLIENTE 100
 #define MAXPEDIDOS 1000
@@ -24,14 +25,17 @@
 int main(void){
 	cliente datosClientes[MAXCLIENTE];
 	pedido datosPedido[MAXPEDIDOS];
+
+
+
 	int contadorClientes=1;
 	int contadorPedidos=1;
 	int choice;
 	int end=0;
-	int flagCliente=0;
-	int flagPedidos=0;
 	utn_initSistemCliente(datosClientes,MAXCLIENTE);
 	utn_initSistemPedidos(datosPedido,MAXPEDIDOS);
+	clientesHardcodeo(datosClientes,MAXCLIENTE);
+	pedidosHardcodeados(datosPedido,MAXPEDIDOS);
 
 	while(end==0)
 	{
@@ -52,81 +56,23 @@ int main(void){
 		{
 			case 1:		utn_addCliente(datosClientes,MAXCLIENTE,contadorClientes,MAXNOMBRE,MAXDIRECCION,MAXCUIT);
 						contadorClientes++;
-						flagCliente=1;
 						break;
-			case 2:		if(flagCliente==0)
-						{
-							printf("Primero debe ingresar clientes\n");
-						}
-						else
-						{
-							utn_modifyCliente(datosClientes,MAXCLIENTE,MAXDIRECCION);
-						}
+			case 2:		utn_modifyCliente(datosClientes,MAXCLIENTE,MAXDIRECCION);
 						break;
-			case 3:		if(flagCliente==0)
-						{
-							printf("Primero debe ingresar clientes\n");
-						}
-						else
-						{
-							utn_removeCliente(datosClientes,MAXCLIENTE);
-						}
+			case 3:		utn_removeCliente(datosClientes,MAXCLIENTE);
 						break;
-			case 4:		if(flagCliente==0)
-						{
-							printf("Primero debe ingresar clientes\n");
-						}
-						else
-						{
-							utn_addPedido(datosClientes,datosPedido,MAXCLIENTE,MAXPEDIDOS,contadorPedidos);
-							contadorPedidos++;
-							flagPedidos=1;
-						}
+			case 4:		utn_addPedido(datosClientes,datosPedido,MAXCLIENTE,MAXPEDIDOS,contadorPedidos);
+						contadorPedidos++;
 						break;
-			case 5:		if(flagCliente==0||flagPedidos==0)
-						{
-							printf("Primero debe ingresar clientes\n");
-						}
-						else
-						{
-							utn_procesarPedido(datosClientes,datosPedido,MAXPEDIDOS);
-						}
+			case 5:		utn_procesarPedido(datosClientes,datosPedido,MAXPEDIDOS,MAXCLIENTE);
 						break;
-			case 6:		if(flagCliente==0)
-						{
-							printf("Primero debe ingresar clientes\n");
-						}
-						else
-						{
-							utn_imprimirClientes(datosClientes,MAXCLIENTE);
-						}
+			case 6:		utn_imprimirClientes(datosClientes,MAXCLIENTE);
 						break;
-			case 7:		if(flagCliente==0||flagPedidos==0)
-						{
-							printf("Primero debe ingresar clientes y pedidos\n");
-						}
-						else
-						{
-							utn_reportPedidosPendientes(datosClientes,datosPedido,MAXPEDIDOS);
-						}
+			case 7:		utn_reportPedidosPendientes(datosClientes,datosPedido,MAXPEDIDOS);
 						break;
-			case 8:		if(flagCliente==0||flagPedidos==0)
-						{
-							printf("Primero debe ingresar clientes y pedidos\n");
-						}
-						else
-						{
-							utn_reportPedidosProcesados(datosClientes,datosPedido,MAXPEDIDOS);
-						}
+			case 8:		utn_reportPedidosProcesados(datosClientes,datosPedido,MAXPEDIDOS);
 						break;
-			case 9:		if(flagCliente==0||flagPedidos==0)
-						{
-							printf("Primero debe ingresar clientes y pedidos\n");
-						}
-						else
-						{
-							utn_informesParcial(datosClientes,datosPedido,MAXCLIENTE,MAXPEDIDOS);
-						}
+			case 9:		utn_informesParcial(datosClientes,datosPedido,MAXCLIENTE,MAXPEDIDOS);
 						break;
 			default:	return 0;
 						break;

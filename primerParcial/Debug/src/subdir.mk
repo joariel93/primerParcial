@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/hardcodeo.c \
 ../src/primerParcial.c \
 ../src/utn_informes.c \
 ../src/utn_inputs.c \
@@ -11,6 +12,7 @@ C_SRCS += \
 ../src/utn_structBibPedido.c 
 
 OBJS += \
+./src/hardcodeo.o \
 ./src/primerParcial.o \
 ./src/utn_informes.o \
 ./src/utn_inputs.o \
@@ -18,6 +20,7 @@ OBJS += \
 ./src/utn_structBibPedido.o 
 
 C_DEPS += \
+./src/hardcodeo.d \
 ./src/primerParcial.d \
 ./src/utn_informes.d \
 ./src/utn_inputs.d \

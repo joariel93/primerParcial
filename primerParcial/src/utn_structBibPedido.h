@@ -25,7 +25,7 @@ int utn_initSistemPedidos(pedido pArray[],int limite);
 int utn_findFreePedido(pedido pArray[],int limite,int* posicion);
 int utn_findPedidoById(pedido pArray[], int limite,int* posicion,int idEnviado);
 int utn_addPedido(cliente array[],pedido pArray[],int limiteClientes,int limitePedidos,int contador);
-int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite);
+int utn_procesarPedido(cliente arrayCliente[],pedido pArray[],int limite,int limiteCliente);
 int utn_reportPedidosPendientes(cliente cArray[],pedido pArray[],int limite);
 int utn_reportPedidosProcesados(cliente array[],pedido pArray[],int limite);
 int utn_comprobePedido(int pArray[],int limite,int *errorDatos);
@@ -35,6 +35,5 @@ int utn_compruebaPeso(float pMax);
 int utn_getPedidoAux(pedido pArray[],pedido auxPedido[],int limitePedidos);
 int utn_limpiarRecolectado(pedido pArray[],int limitePedidos);
 int	utn_sumarCategoriasPlasticos(pedido pArray[],int limitePedidos);
-
 
 #endif /* UTN_STRUCTBIBPEDIDO_H_ */

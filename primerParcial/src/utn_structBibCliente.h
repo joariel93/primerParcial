@@ -14,6 +14,7 @@ struct cliente
 	char cuit[14];
 	char calle[30];
 	char localidad[30];
+	float reciclado;
 	int pedidos;
 	int isEmpty;
 };
